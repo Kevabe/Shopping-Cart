@@ -1,20 +1,19 @@
 // simulate getting products from DataBase
 const products = [
-  { name: "Apple", country: "Italy", cost: 3, instock: 10 },
-  { name: "Orange", country: "Spain", cost: 4, instock: 3 },
-  { name: "Beans", country: "USA", cost: 2, instock: 5 },
-  { name: "Cabbage", country: "USA", cost: 1, instock: 8 },
+  { name: "Apples:", country: "Italy", cost: 3, instock: 10 },
+  { name: "Oranges:", country: "Spain", cost: 4, instock: 3 },
+  { name: "Beans:", country: "USA", cost: 2, instock: 5 },
+  { name: "Cabbage:", country: "USA", cost: 1, instock: 8 },
 ];
 //=========Cart=============
 const Cart = (props) => {
   const { Card, Accordion, Button } = ReactBootstrap;
   let data = props.location.data ? props.location.data : products;
-  //console.log(`data:${JSON.stringify(data)}`);
+  console.log(`data:${JSON.stringify(data)}`);
 
-  return <Accordion defaultActiveKey="0">{list}</Accordion>;
+  return <Accordion defaultActiveKey="0">{cartlist}</Accordion>;
 };
 
-//------------------------------------------------------------------------------
 const useDataApi = (initialUrl, initialData) => {
   const { useState, useEffect, useReducer } = React;
   const [url, setUrl] = useState(initialUrl);
@@ -24,9 +23,9 @@ const useDataApi = (initialUrl, initialData) => {
     isError: false,
     data: initialData,
   });
-  //console.log(`useDataApi called`);
+  console.log(`useDataApi called`);
   useEffect(() => {
-    //console.log("useEffect Called");
+    console.log("useEffect Called");
     let didCancel = false;
     const fetchData = async () => {
       dispatch({ type: "FETCH_INIT" });
@@ -74,49 +73,44 @@ const dataFetchReducer = (state, action) => {
       throw new Error();
   }
 };
-//-----------------------------------------------------------------------------------
+
 const Products = (props) => {
   const [items, setItems] = React.useState(products);
   const [cart, setCart] = React.useState([]);
   const [total, setTotal] = React.useState(0);
-  const { Card, Accordion, Button, Container, Row, Col, Image, Input } =
-    ReactBootstrap;
+  const {
+    Card,
+    Accordion,
+    Button,
+    Container,
+    Row,
+    Col,
+    Image,
+    Input,
+  } = ReactBootstrap;
   //  Fetch Data
   const { Fragment, useState, useEffect, useReducer } = React;
-  const [query, setQuery] = useState("http://localhost:1337/api/products");
+  const [query, setQuery] = useState("http://localhost:1337/api/shoppingproducts");
   const [{ data, isLoading, isError }, doFetch] = useDataApi(
-    "http://localhost:1337/api/products",
+    "http://localhost:1337/api/shoppingproducts",
     {
       data: [],
     }
   );
-  //console.log(`Rendering Products ${JSON.stringify(data)}`);
+  console.log(`Rendering Products ${JSON.stringify(data)}`);
   // Fetch Data
   const addToCart = (e) => {
     let name = e.target.name;
     let item = items.filter((item) => item.name == name);
-    if(item[0].instock == 0 )return;
-    item[0].instock = item[0].instock-1;
+    console.log(`add to Cart ${JSON.stringify(item)}`);
     setCart([...cart, ...item]);
-  
     //doFetch(query);
   };
   const deleteCartItem = (index) => {
-    
-    console.log(cart);
-    let itemDeleted = cart[index];
     let newCart = cart.filter((item, i) => index != i);
-    console.log("item deleted: " + itemDeleted);
-
-    items.map((item) => {
-      if (item.name === itemDeleted.name) {
-          item.instock = item.instock + 1;
-      }
-    });
-    setItems(items);
     setCart(newCart);
   };
-  const photos = ["apple.png", "orange.png", "beans.png", "cabbage.png"];
+  const photos = ["apple.jpg", "oranges.jpg", "beans.jpg", "cabbage.jpg"];
 
   let list = items.map((item, index) => {
     //let n = index + 1049;
@@ -124,50 +118,33 @@ const Products = (props) => {
 
     return (
       <li key={index}>
-        <div
-          className="card mb-3"
-          style={{ maxWidth: "450px", height: "10rem" }}
+        <Image src={photos[index % 4]} width={70} roundedCircle></Image>{" "}
+        <Button variant="outline-primary" size="large">
+          {item.name}
+        </Button>{" "}
+        <Button variant="outline-primary" size="large">
+          {item.country}
+        </Button>{" "}
+        <Button variant="outline-primary" size="large">
+          {item.cost}
+        </Button>{" "}
+        <Button variant="outline-primary" size="large">
+          {item.instock}
+        </Button>{" "}
+        <Button
+          name={item.name}
+          type="submit"
+          onClick={addToCart}
+          variant="outline-success"
         >
-          <div className="row g-0">
-            <div className="col-md-4">
-              <Image
-                src={photos[index % 4]}
-                fluid
-                rounded
-                className="align-self-start"
-              ></Image>
-            </div>
-            <div className="col-md-4">
-              <div className="card-body">
-                <h5 className="card-title">{item.name}</h5>
-                <p className="card-text">Price: $ {item.cost}</p>
-                <p className="card-text">
-                  <small className="text-muted">In Stock: {item.instock}</small>
-                </p>
-              </div>
-            </div>
-            <div className="col-md-4">
-              <div className="card-body d-flex justify-content-center">
-                <div></div>
-                <input
-                  name={item.name}
-                  type="submit"
-                  onClick={addToCart}
-                  value="Add to Cart"
-                  className="btn btn-primary"
-                  style={{ top: "50%" }}
-              
-                ></input>
-              </div>
-            </div>
-          </div>
-        </div>
+          Add
+        </Button>
       </li>
     );
   });
   let cartList = cart.map((item, index) => {
     return (
-      <Card key={index}>
+      <Card key={1 + index}>
         <Card.Header>
           <Accordion.Toggle as={Button} variant="link" eventKey={1 + index}>
             {item.name}
@@ -178,7 +155,7 @@ const Products = (props) => {
           eventKey={1 + index}
         >
           <Card.Body>
-            $ {item.cost} from {item.country}
+            $ {item.cost} from {item.country}{" : "}{" "}{" Delete"}
           </Card.Body>
         </Accordion.Collapse>
       </Card>
@@ -190,7 +167,7 @@ const Products = (props) => {
     let final = cart.map((item, index) => {
       return (
         <div key={index} index={index}>
-          {item.name}
+          {item.name}{item.cost}
         </div>
       );
     });
@@ -201,62 +178,49 @@ const Products = (props) => {
     let costs = cart.map((item) => item.cost);
     const reducer = (accum, current) => accum + current;
     let newTotal = costs.reduce(reducer, 0);
-    
+    console.log(`total updated to ${newTotal}`);
     return newTotal;
   };
   // TODO: implement the restockProducts function
   const restockProducts = (url) => {
     doFetch(url);
-    let newItems = data.map((item) => {
-      let { name, country, cost, instock } = item;
-      let t = items.find((element) => element.name == name);
-      
-      instock = instock + t.instock;
-     
-      return { name, country, cost, instock };
+    let newItems = data.mar((item) => {
+      let {name, country, cost, instock} = item;
+      return {name, country, cost, instock};
     });
-
-    
-    setItems(newItems);
+    setItems([...items, ...newItems]);
   };
-
   return (
-    <Container fluid>
+    <Container>
       <Row>
-        <Col>
-          <h2>Product List</h2>
+        <Col xs={6}>
+          <h1>Product List</h1>
           <ul style={{ listStyleType: "none" }}>{list}</ul>
         </Col>
         <Col>
-          <h2>Cart Contents</h2>
+          <h1>Cart Contents</h1>
           <Accordion>{cartList}</Accordion>
         </Col>
         <Col>
-          <h2>CheckOut </h2>
+          <h1>CheckOut </h1>
           <Button onClick={checkOut}>CheckOut $ {finalList().total}</Button>
           <div> {finalList().total > 0 && finalList().final} </div>
         </Col>
       </Row>
-      <Row className="justify-content-center">
+      <Row>
         <form
           onSubmit={(event) => {
-            restockProducts(`http://localhost:1337/api/products/${query}`);
-            
-           
+            restockProducts(`http://localhost:1337/api/${query}`);
+            console.log(`Restock called on ${query}`);
             event.preventDefault();
           }}
         >
-          <div>
-            <input
-              size="50"
-              type="text"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-            />
-            <button type="submit" className="btn btn-primary">
-              ReStock Products
-            </button>
-          </div>
+          <input
+            type="text"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+          />
+          <button type="submit">ReStock Products</button>
         </form>
       </Row>
     </Container>
