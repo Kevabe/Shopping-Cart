@@ -124,7 +124,7 @@ const Products = (props) => {
     let url = "https://picsum.photos/65";
     return (
       <li key={index}>
-        <Image src={url} width={70} roundedCircle></Image>
+        <Image src={url} width={100} roundedCircle></Image>
         <Button variant="primary" size="large">
           {item.name} ${item.cost} - We have {item.instock} in stock
         </Button>
