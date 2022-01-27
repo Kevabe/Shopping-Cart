@@ -121,7 +121,7 @@ const Products = (props) => {
 
   let list = items.map((item, index) => {
     let n = index + 500; //(Math.floor(Math.random() * 1049));
-    let url = "https://picsum.photos/id/" + n + "/50/50";
+    let url = "https://picsum.photos/65";
     return (
       <li key={index}>
         <Image src={url} width={70} roundedCircle></Image>
