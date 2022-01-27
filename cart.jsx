@@ -1,8 +1,8 @@
 // simulate getting products from DataBase
 const products = [
-  { name: "Apples:", country: "Italy", cost: 3, instock: 10 },
+  { name: "Apples_:", country: "Italy", cost: 3, instock: 10 },
   { name: "Oranges:", country: "Spain", cost: 4, instock: 3 },
-  { name: "Beans:", country: "USA", cost: 2, instock: 5 },
+  { name: "Beans__:", country: "USA", cost: 2, instock: 5 },
   { name: "Cabbage:", country: "USA", cost: 1, instock: 8 },
 ];
 //=========Cart=============
@@ -11,7 +11,7 @@ const Cart = (props) => {
   let data = props.location.data ? props.location.data : products;
   console.log(`data:${JSON.stringify(data)}`);
 
-  return <Accordion defaultActiveKey="0">{cartlist}</Accordion>;
+  return <Accordion defaultActiveKey="0">{list}</Accordion>;
 };
 
 const useDataApi = (initialUrl, initialData) => {
@@ -90,9 +90,9 @@ const Products = (props) => {
   } = ReactBootstrap;
   //  Fetch Data
   const { Fragment, useState, useEffect, useReducer } = React;
-  const [query, setQuery] = useState("http://localhost:1337/api/shoppingproducts");
+  const [query, setQuery] = useState("http://localhost:1337/api/products");
   const [{ data, isLoading, isError }, doFetch] = useDataApi(
-    "http://localhost:1337/api/shoppingproducts",
+    "http://localhost:1337/api/products",
     {
       data: [],
     }
@@ -113,38 +113,22 @@ const Products = (props) => {
   const photos = ["apple.png", "orange.png", "beans.png", "cabbage.png"];
 
   let list = items.map((item, index) => {
-    let n = index + 1049;
-    let url = "https://picsum.photos/65";
+    //let n = index + 1049;
+    //let url = "https://picsum.photos/id/" + n + "/50/50";
 
     return (
       <li key={index}>
-        <Image src={photos[index % 4]} width={70} roundedCircle></Image>{" "}
-        <Button variant="outline-primary" size="large">
-          {item.name}
-        </Button>{" "}
-        <Button variant="outline-primary" size="large">
-          {item.country}
-        </Button>{" "}
-        <Button variant="outline-primary" size="large">
-          {item.cost}
-        </Button>{" "}
-        <Button variant="outline-primary" size="large">
-          {item.instock}
-        </Button>{" "}
-        <Button
-          name={item.name}
-          type="submit"
-          onClick={addToCart}
-          variant="outline-success"
-        >
-          Add
+        <Image src={photos[index % 4]} width={70} roundedCircle></Image>
+        <Button variant="primary" size="large">
+          {item.name}:{item.cost}
         </Button>
+        <input name={item.name} type="submit" onClick={addToCart}></input>
       </li>
     );
   });
   let cartList = cart.map((item, index) => {
     return (
-      <Card key={1 + index}>
+      <Card key={index}>
         <Card.Header>
           <Accordion.Toggle as={Button} variant="link" eventKey={1 + index}>
             {item.name}
@@ -155,7 +139,7 @@ const Products = (props) => {
           eventKey={1 + index}
         >
           <Card.Body>
-            $ {item.cost} from {item.country}{" : "}{" "}{" Delete"}
+            $ {item.cost} from {item.country}
           </Card.Body>
         </Accordion.Collapse>
       </Card>
@@ -167,7 +151,7 @@ const Products = (props) => {
     let final = cart.map((item, index) => {
       return (
         <div key={index} index={index}>
-          {item.name}{item.cost}
+          {item.name}
         </div>
       );
     });
@@ -184,16 +168,17 @@ const Products = (props) => {
   // TODO: implement the restockProducts function
   const restockProducts = (url) => {
     doFetch(url);
-    let newItems = data.mar((item) => {
-      let {name, country, cost, instock} = item;
-      return {name, country, cost, instock};
+    let newItems = data.map((item) => {
+      let {name, country, cost, instock };
+      return {name, country, cost, instcok};
     });
     setItems([...items, ...newItems]);
   };
+
   return (
     <Container>
       <Row>
-        <Col xs={6}>
+        <Col>
           <h1>Product List</h1>
           <ul style={{ listStyleType: "none" }}>{list}</ul>
         </Col>
@@ -210,7 +195,7 @@ const Products = (props) => {
       <Row>
         <form
           onSubmit={(event) => {
-            restockProducts(`http://localhost:1337/api/${query}`);
+            restockProducts(`http://localhost:1337/${query}`);
             console.log(`Restock called on ${query}`);
             event.preventDefault();
           }}
