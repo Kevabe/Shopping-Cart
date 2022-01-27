@@ -240,7 +240,8 @@ const Products = (props) => {
       <Row className="justify-content-center">
         <form
           onSubmit={(event) => {
-            restockProducts(`http://localhost:8082/${query}`);
+            restockProducts(`http://localhost:1337/api/products/${query}`);
+            
            
             event.preventDefault();
           }}
