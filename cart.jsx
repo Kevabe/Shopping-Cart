@@ -201,7 +201,7 @@ const Products = (props) => {
     let costs = cart.map((item) => item.cost);
     const reducer = (accum, current) => accum + current;
     let newTotal = costs.reduce(reducer, 0);
-    //console.log(`total updated to ${newTotal}`);
+    
     return newTotal;
   };
   // TODO: implement the restockProducts function
@@ -210,13 +210,13 @@ const Products = (props) => {
     let newItems = data.map((item) => {
       let { name, country, cost, instock } = item;
       let t = items.find((element) => element.name == name);
-      //console.log("test: " + t.name);
+      
       instock = instock + t.instock;
-      //console.log("totalStock: " + instock);
+     
       return { name, country, cost, instock };
     });
 
-    //console.log(`newItems ${JSON.stringify(newItems)}`);
+    
     setItems(newItems);
   };
 
@@ -241,7 +241,7 @@ const Products = (props) => {
         <form
           onSubmit={(event) => {
             restockProducts(`http://localhost:8082/${query}`);
-            //console.log(`Restock called on ${query}`);
+           
             event.preventDefault();
           }}
         >
